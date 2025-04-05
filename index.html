@@ -74,6 +74,11 @@
 </head>
 <body>
 
+<div class="tab-buttons">
+  <button onclick="afficherOnglet('commandes')" class="btn-blue">Commandes</button>
+  <button onclick="afficherOnglet('admin')" class="btn-orange">Gérer les plats</button>
+</div>
+
 
 <div class="tab-buttons">
   <button onclick="afficherOnglet('commandes')" class="btn-blue">Commandes</button>
@@ -132,6 +137,16 @@
 </div>
 
 <script>
+function afficherOnglet(nom) {
+  document.getElementById("onglet-commandes").classList.add("hidden");
+  document.getElementById("onglet-admin").classList.add("hidden");
+  document.getElementById(`onglet-${nom}`).classList.remove("hidden");
+
+  if (nom === "admin") {
+    rafraichirListePlatsAdmin();
+  }
+}
+
 console.log("App KIMLONG prête.");
 
 
@@ -203,6 +218,16 @@ function annulerEditionPlat() {
 </div>
 
 <script>
+function afficherOnglet(nom) {
+  document.getElementById("onglet-commandes").classList.add("hidden");
+  document.getElementById("onglet-admin").classList.add("hidden");
+  document.getElementById(`onglet-${nom}`).classList.remove("hidden");
+
+  if (nom === "admin") {
+    rafraichirListePlatsAdmin();
+  }
+}
+
 console.log("App KIMLONG prête.");
 
 
