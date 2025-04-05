@@ -138,6 +138,13 @@
 
 <script>
 
+function afficherOnglet(nom) {
+  document.getElementById("onglet-commandes").classList.add("hidden");
+  document.getElementById("onglet-admin").classList.add("hidden");
+  document.getElementById(`onglet-${nom}`).classList.remove("hidden");
+}
+
+
 console.log("App KIMLONG prête.");
 
 </script>
@@ -158,6 +165,13 @@ console.log("App KIMLONG prête.");
 </div>
 
 <script>
+
+function afficherOnglet(nom) {
+  document.getElementById("onglet-commandes").classList.add("hidden");
+  document.getElementById("onglet-admin").classList.add("hidden");
+  document.getElementById(`onglet-${nom}`).classList.remove("hidden");
+}
+
 
 console.log("App KIMLONG prête.");
 
