@@ -1,14 +1,9 @@
-
 <!DOCTYPE html>
 <html lang="fr">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
   <title>KIMLONG - Commandes</title>
-  <link rel="manifest" href="manifest.json" />
-  <link rel="apple-touch-icon" href="icon-512.png" />
-  <meta name="apple-mobile-web-app-capable" content="yes" />
-  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
   <style>
     body {
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
@@ -18,7 +13,12 @@
       color: #333;
       max-width: 100%;
     }
-    .hidden { display: none; }
+
+    h2, h3 {
+      margin-top: 1.5em;
+      color: #111;
+    }
+
     .section {
       background: white;
       padding: 1em;
@@ -26,7 +26,8 @@
       border-radius: 8px;
       box-shadow: 0 2px 4px rgba(0,0,0,0.05);
     }
-    input[type="text"], input[type="number"], select {
+
+    input[type="text"], select {
       width: 100%;
       padding: 0.75em;
       font-size: 1em;
@@ -34,6 +35,7 @@
       border: 1px solid #ccc;
       border-radius: 6px;
     }
+
     button {
       display: inline-block;
       padding: 0.6em 1em;
@@ -44,56 +46,88 @@
       border-radius: 6px;
       cursor: pointer;
     }
+
     .btn-green { background-color: #4CAF50; color: white; }
     .btn-red { background-color: #e53935; color: white; }
     .btn-blue { background-color: #2196F3; color: white; }
     .btn-orange { background-color: #ff9800; color: white; }
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 1em;
-    }
-    th, td {
-      text-align: left;
-      padding: 0.5em;
-      border-bottom: 1px solid #eee;
-    }
-    tfoot td { font-weight: bold; }
+
     .radio-group {
       display: flex;
       gap: 1em;
       margin: 1em 0;
     }
-    .tab-buttons { margin-bottom: 1em; }
-    .tab-buttons button { margin-right: 0.5em; }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 1em;
+    }
+
+    th, td {
+      text-align: left;
+      padding: 0.5em;
+      border-bottom: 1px solid #eee;
+      font-size: 0.95em;
+    }
+
+    tfoot td {
+      font-weight: bold;
+    }
+
+    .suggestions {
+      position: absolute;
+      background: white;
+      border: 1px solid #ccc;
+      width: 100%;
+      max-width: 580px;
+      z-index: 10;
+      border-top: none;
+    }
+
+    .suggestions div {
+      padding: 0.5em;
+      cursor: pointer;
+    }
+
+    .suggestions div:hover {
+      background-color: #f0f0f0;
+    }
+
     @media (max-width: 600px) {
-      table, th, td { font-size: 0.9em; }
-      button { width: 100%; }
+      table, th, td {
+        font-size: 0.9em;
+      }
+      button {
+        width: 100%;
+      }
     }
   </style>
 </head>
 <body>
 
-<div class="tab-buttons">
-  <button onclick="afficherOnglet('commandes')" class="btn-blue">Commandes</button>
-  <button onclick="afficherOnglet('admin')" class="btn-orange">Gérer les plats</button>
-</div>
-
-<div id="onglet-commandes">
   <div class="section">
     <h2>Commande en cours</h2>
+
     <div class="radio-group">
       <label><input type="radio" name="mode" value="surPlace" checked onchange="afficherCommandeEnCours()"> Sur place</label>
       <label><input type="radio" name="mode" value="emporter" onchange="afficherCommandeEnCours()"> À emporter</label>
     </div>
-    <input id="inputPlat" type="text" inputmode="text" autocomplete="off" autocapitalize="none" placeholder="Ex : 2 bo bun" oninput="mettreAJourSuggestions()" />
+
+    <input id="inputPlat" type="text" inputmode="text" autocomplete="off" autocapitalize="none" />
     <div id="suggestions" class="suggestions"></div>
     <button onclick="ajouterPlat()" class="btn-green">Ajouter</button>
+
     <table>
-      <thead><tr><th>Plat</th><th>Qté</th><th>PU (€)</th><th>Total (€)</th></tr></thead>
+      <thead>
+        <tr><th>Plat</th><th>Qté</th><th>PU (€)</th><th>Total (€)</th></tr>
+      </thead>
       <tbody id="listePlats"></tbody>
-      <tfoot><tr><td colspan="3">TOTAL</td><td id="totalGeneral">0 €</td></tr></tfoot>
+      <tfoot>
+        <tr><td colspan="3">TOTAL</td><td id="totalGeneral">0 €</td></tr>
+      </tfoot>
     </table>
+
     <button onclick="resetCommandeEnCours()" class="btn-red">Réinitialiser</button>
     <button onclick="enregistrerCommande()" class="btn-green">Enregistrer</button>
     <button onclick="mettreAJourCommandeExistante()" id="btnMajCommande" class="btn-orange" style="display:none;">Mettre à jour</button>
@@ -106,34 +140,215 @@
     </select>
     <button onclick="modifierCommande()" class="btn-blue">Modifier</button>
     <button onclick="supprimerCommande()" class="btn-red">Supprimer</button>
+
     <table>
-      <thead><tr><th>Plat</th><th>Qté</th><th>PU (€)</th><th>Total (€)</th></tr></thead>
+      <thead>
+        <tr><th>Plat</th><th>Qté</th><th>PU (€)</th><th>Total (€)</th></tr>
+      </thead>
       <tbody id="listeCommandesSauvegardees"></tbody>
-      <tfoot><tr><td colspan="3">TOTAL</td><td id="totalCommandesSauvegardees">0 €</td></tr></tfoot>
+      <tfoot>
+        <tr><td colspan="3">TOTAL</td><td id="totalCommandesSauvegardees">0 €</td></tr>
+      </tfoot>
     </table>
   </div>
-</div>
-
-<div id="onglet-admin" class="hidden">
-  <div class="section">
-    <h2>Gestion des plats</h2>
-    <table id="tablePlatsAdmin">
-      <thead><tr><th>Plat</th><th>Sur place (€)</th><th>À emporter (€)</th><th>Actions</th></tr></thead>
-      <tbody></tbody>
-    </table>
-    <h3>Ajouter / Modifier un plat</h3>
-    <input type="text" id="adminNomPlat" placeholder="Nom du plat" />
-    <input type="number" id="adminPrixSurPlace" placeholder="Prix sur place" step="0.01" />
-    <input type="number" id="adminPrixEmporter" placeholder="Prix à emporter" step="0.01" />
-    <button onclick="ajouterOuModifierPlat()" class="btn-green">Enregistrer</button>
-    <button onclick="annulerEditionPlat()" class="btn-red">Annuler</button>
-  </div>
-</div>
-
-<script>
-
-console.log("App KIMLONG prête.");
-
-</script>
-</body>
-</html>
+  <script>
+    const prixPlats = {
+      "bo bun": { surPlace: 12, emporter: 11 },
+      "pho spécial": { surPlace: 13, emporter: 12 },
+      "nems": { surPlace: 5, emporter: 4.5 },
+      "riz cantonnais": { surPlace: 8, emporter: 7.5 },
+      "pad thaï": { surPlace: 11, emporter: 10 }
+    };
+  
+    let commandeEnCours = [];
+    let commandesEnregistrees = JSON.parse(localStorage.getItem("commandesKIMLONG") || "{}");
+    let commandeActuelleNom = null;
+    let nomCommandeModifiee = null;
+  
+    function getMode() {
+      return document.querySelector('input[name="mode"]:checked').value;
+    }
+  
+    function ajouterPlat(forceText = null) {
+      const input = document.getElementById("inputPlat");
+      const saisie = (forceText || input.value.trim()).toLowerCase();
+      if (!saisie) return;
+  
+      const match = saisie.match(/^(\d+)\s+(.+)$/i);
+      if (!match) {
+        alert("Saisissez au format : 2 bo bun");
+        return;
+      }
+  
+      const quantite = parseInt(match[1]);
+      const nom = match[2];
+  
+      if (!prixPlats[nom]) {
+        alert(`Plat inconnu : "${nom}"`);
+        return;
+      }
+  
+      commandeEnCours.push({ nom, quantite });
+      input.value = "";
+      cacherSuggestions();
+      afficherCommandeEnCours();
+    }
+  
+    function afficherCommandeEnCours() {
+      const mode = getMode();
+      const tbody = document.getElementById("listePlats");
+      tbody.innerHTML = "";
+      let total = 0;
+  
+      commandeEnCours.forEach(plat => {
+        const pu = prixPlats[plat.nom][mode];
+        const ligneTotal = pu * plat.quantite;
+        total += ligneTotal;
+        tbody.innerHTML += `<tr>
+          <td>${plat.nom}</td>
+          <td>${plat.quantite}</td>
+          <td>${pu.toFixed(2)}</td>
+          <td>${ligneTotal.toFixed(2)}</td>
+        </tr>`;
+      });
+  
+      document.getElementById("totalGeneral").innerText = total.toFixed(2) + " €";
+    }
+  
+    function enregistrerCommande() {
+      if (commandeEnCours.length === 0) return alert("La commande est vide.");
+      const nom = prompt("Nom de la commande (ex: Table 4, Uber Eats) :");
+      if (!nom || commandesEnregistrees[nom]) {
+        alert("Nom invalide ou déjà utilisé.");
+        return;
+      }
+  
+      commandesEnregistrees[nom] = [...commandeEnCours];
+      localStorage.setItem("commandesKIMLONG", JSON.stringify(commandesEnregistrees));
+      commandeEnCours = [];
+      nomCommandeModifiee = null;
+      document.getElementById("btnMajCommande").style.display = "none";
+      remplirListeCommandes();
+      afficherCommandeEnCours();
+      alert(`Commande "${nom}" enregistrée.`);
+    }
+  
+    function mettreAJourCommandeExistante() {
+      if (!nomCommandeModifiee) return;
+      commandesEnregistrees[nomCommandeModifiee] = [...commandeEnCours];
+      localStorage.setItem("commandesKIMLONG", JSON.stringify(commandesEnregistrees));
+      commandeEnCours = [];
+      nomCommandeModifiee = null;
+      document.getElementById("btnMajCommande").style.display = "none";
+      remplirListeCommandes();
+      afficherCommandeEnCours();
+      alert(`Commande "${nomCommandeModifiee}" mise à jour.`);
+    }
+  
+    function resetCommandeEnCours() {
+      if (confirm("Effacer la commande en cours ?")) {
+        commandeEnCours = [];
+        afficherCommandeEnCours();
+        nomCommandeModifiee = null;
+        document.getElementById("btnMajCommande").style.display = "none";
+      }
+    }
+  
+    function remplirListeCommandes() {
+      const select = document.getElementById("commandeSelect");
+      select.innerHTML = `<option disabled selected>-- Sélectionner --</option>`;
+      for (let nom in commandesEnregistrees) {
+        const option = document.createElement("option");
+        option.value = nom;
+        option.textContent = nom;
+        select.appendChild(option);
+      }
+    }
+  
+    function changerCommande() {
+      const nom = document.getElementById("commandeSelect").value;
+      commandeActuelleNom = nom;
+      const commande = commandesEnregistrees[nom];
+      const mode = getMode();
+      const tbody = document.getElementById("listeCommandesSauvegardees");
+      tbody.innerHTML = "";
+      let total = 0;
+  
+      commande.forEach(plat => {
+        const pu = prixPlats[plat.nom][mode];
+        const ligneTotal = pu * plat.quantite;
+        total += ligneTotal;
+        tbody.innerHTML += `<tr>
+          <td>${plat.nom}</td>
+          <td>${plat.quantite}</td>
+          <td>${pu.toFixed(2)}</td>
+          <td>${ligneTotal.toFixed(2)}</td>
+        </tr>`;
+      });
+  
+      document.getElementById("totalCommandesSauvegardees").innerText = total.toFixed(2) + " €";
+    }
+  
+    function modifierCommande() {
+      if (!commandeActuelleNom) return alert("Sélectionnez une commande.");
+      commandeEnCours = [...commandesEnregistrees[commandeActuelleNom]];
+      nomCommandeModifiee = commandeActuelleNom;
+      document.getElementById("btnMajCommande").style.display = "inline-block";
+      afficherCommandeEnCours();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  
+    function supprimerCommande() {
+      if (!commandeActuelleNom) return alert("Sélectionnez une commande.");
+      if (confirm(`Supprimer la commande "${commandeActuelleNom}" ?`)) {
+        delete commandesEnregistrees[commandeActuelleNom];
+        localStorage.setItem("commandesKIMLONG", JSON.stringify(commandesEnregistrees));
+        commandeActuelleNom = null;
+        remplirListeCommandes();
+        document.getElementById("listeCommandesSauvegardees").innerHTML = "";
+        document.getElementById("totalCommandesSauvegardees").innerText = "0 €";
+      }
+    }
+  
+    function mettreAJourSuggestions() {
+      const input = document.getElementById("inputPlat").value.toLowerCase().trim();
+      const container = document.getElementById("suggestions");
+      container.innerHTML = "";
+  
+      const match = input.match(/^(\d+)\s+(.+)$/);
+      if (!match) {
+        container.style.display = "none";
+        return;
+      }
+  
+      const quantite = match[1];
+      const debut = match[2];
+  
+      const suggestions = Object.keys(prixPlats).filter(nom => nom.startsWith(debut));
+      if (suggestions.length === 0) {
+        container.style.display = "none";
+        return;
+      }
+  
+      suggestions.forEach(nom => {
+        const div = document.createElement("div");
+        div.textContent = `${quantite} ${nom}`;
+        div.onclick = () => ajouterPlat(`${quantite} ${nom}`);
+        container.appendChild(div);
+      });
+  
+      container.style.display = "block";
+    }
+  
+    function cacherSuggestions() {
+      document.getElementById("suggestions").innerHTML = "";
+      document.getElementById("suggestions").style.display = "none";
+    }
+  
+    // Init
+    remplirListeCommandes();
+    afficherCommandeEnCours();
+  </script>
+  </body>
+  </html>
+  
