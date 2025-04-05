@@ -1,0 +1,139 @@
+
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+  <title>KIMLONG - Commandes</title>
+  <link rel="manifest" href="manifest.json" />
+  <link rel="apple-touch-icon" href="icon-512.png" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      margin: 0;
+      padding: 1em;
+      background: #f9f9f9;
+      color: #333;
+      max-width: 100%;
+    }
+    .hidden { display: none; }
+    .section {
+      background: white;
+      padding: 1em;
+      margin-bottom: 2em;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    }
+    input[type="text"], input[type="number"], select {
+      width: 100%;
+      padding: 0.75em;
+      font-size: 1em;
+      margin-bottom: 0.75em;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+    }
+    button {
+      display: inline-block;
+      padding: 0.6em 1em;
+      font-size: 1em;
+      margin-top: 0.5em;
+      margin-bottom: 0.5em;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    .btn-green { background-color: #4CAF50; color: white; }
+    .btn-red { background-color: #e53935; color: white; }
+    .btn-blue { background-color: #2196F3; color: white; }
+    .btn-orange { background-color: #ff9800; color: white; }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 1em;
+    }
+    th, td {
+      text-align: left;
+      padding: 0.5em;
+      border-bottom: 1px solid #eee;
+    }
+    tfoot td { font-weight: bold; }
+    .radio-group {
+      display: flex;
+      gap: 1em;
+      margin: 1em 0;
+    }
+    .tab-buttons { margin-bottom: 1em; }
+    .tab-buttons button { margin-right: 0.5em; }
+    @media (max-width: 600px) {
+      table, th, td { font-size: 0.9em; }
+      button { width: 100%; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="tab-buttons">
+  <button onclick="afficherOnglet('commandes')" class="btn-blue">Commandes</button>
+  <button onclick="afficherOnglet('admin')" class="btn-orange">Gérer les plats</button>
+</div>
+
+<div id="onglet-commandes">
+  <div class="section">
+    <h2>Commande en cours</h2>
+    <div class="radio-group">
+      <label><input type="radio" name="mode" value="surPlace" checked onchange="afficherCommandeEnCours()"> Sur place</label>
+      <label><input type="radio" name="mode" value="emporter" onchange="afficherCommandeEnCours()"> À emporter</label>
+    </div>
+    <input id="inputPlat" type="text" inputmode="text" autocomplete="off" autocapitalize="none" placeholder="Ex : 2 bo bun" oninput="mettreAJourSuggestions()" />
+    <div id="suggestions" class="suggestions"></div>
+    <button onclick="ajouterPlat()" class="btn-green">Ajouter</button>
+    <table>
+      <thead><tr><th>Plat</th><th>Qté</th><th>PU (€)</th><th>Total (€)</th></tr></thead>
+      <tbody id="listePlats"></tbody>
+      <tfoot><tr><td colspan="3">TOTAL</td><td id="totalGeneral">0 €</td></tr></tfoot>
+    </table>
+    <button onclick="resetCommandeEnCours()" class="btn-red">Réinitialiser</button>
+    <button onclick="enregistrerCommande()" class="btn-green">Enregistrer</button>
+    <button onclick="mettreAJourCommandeExistante()" id="btnMajCommande" class="btn-orange" style="display:none;">Mettre à jour</button>
+  </div>
+
+  <div class="section">
+    <h3>Commandes enregistrées</h3>
+    <select id="commandeSelect" onchange="changerCommande()">
+      <option disabled selected>-- Sélectionner --</option>
+    </select>
+    <button onclick="modifierCommande()" class="btn-blue">Modifier</button>
+    <button onclick="supprimerCommande()" class="btn-red">Supprimer</button>
+    <table>
+      <thead><tr><th>Plat</th><th>Qté</th><th>PU (€)</th><th>Total (€)</th></tr></thead>
+      <tbody id="listeCommandesSauvegardees"></tbody>
+      <tfoot><tr><td colspan="3">TOTAL</td><td id="totalCommandesSauvegardees">0 €</td></tr></tfoot>
+    </table>
+  </div>
+</div>
+
+<div id="onglet-admin" class="hidden">
+  <div class="section">
+    <h2>Gestion des plats</h2>
+    <table id="tablePlatsAdmin">
+      <thead><tr><th>Plat</th><th>Sur place (€)</th><th>À emporter (€)</th><th>Actions</th></tr></thead>
+      <tbody></tbody>
+    </table>
+    <h3>Ajouter / Modifier un plat</h3>
+    <input type="text" id="adminNomPlat" placeholder="Nom du plat" />
+    <input type="number" id="adminPrixSurPlace" placeholder="Prix sur place" step="0.01" />
+    <input type="number" id="adminPrixEmporter" placeholder="Prix à emporter" step="0.01" />
+    <button onclick="ajouterOuModifierPlat()" class="btn-green">Enregistrer</button>
+    <button onclick="annulerEditionPlat()" class="btn-red">Annuler</button>
+  </div>
+</div>
+
+<script>
+
+console.log("App KIMLONG prête.");
+
+</script>
+</body>
+</html>
