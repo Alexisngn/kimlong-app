@@ -74,9 +74,10 @@
 </head>
 <body>
 
+
 <div class="tab-buttons">
   <button onclick="afficherOnglet('commandes')" class="btn-blue">Commandes</button>
-  <button onclick="afficherOnglet('admin')" class="btn-orange">Gestion des plats</button>
+  <button onclick="afficherOnglet('admin')" class="btn-orange">Gérer les plats</button>
 </div>
 
 <div id="onglet-commandes">
@@ -131,15 +132,58 @@
 </div>
 
 <script>
+console.log("App KIMLONG prête.");
 
-function afficherOnglet(nom) {
-  document.getElementById("onglet-commandes").classList.add("hidden");
-  document.getElementById("onglet-admin").classList.add("hidden");
-  document.getElementById(`onglet-${nom}`).classList.remove("hidden");
+
+function rafraichirListePlatsAdmin() {
+  const tbody = document.querySelector("#tablePlatsAdmin tbody");
+  tbody.innerHTML = "";
+  for (const nom in prixPlats) {
+    const surPlace = prixPlats[nom].surPlace;
+    const emporter = prixPlats[nom].emporter;
+    tbody.innerHTML += `
+      <tr>
+        <td>${nom}</td>
+        <td>${surPlace}</td>
+        <td>${emporter}</td>
+        <td>
+          <button onclick="chargerPlatPourEdition('${nom}')" class="btn-blue">Modifier</button>
+          <button onclick="supprimerPlat('${nom}')" class="btn-red">Supprimer</button>
+        </td>
+      </tr>`;
+  }
 }
 
+function ajouterOuModifierPlat() {
+  const nom = document.getElementById("adminNomPlat").value.trim().toLowerCase();
+  const surPlace = parseFloat(document.getElementById("adminPrixSurPlace").value);
+  const emporter = parseFloat(document.getElementById("adminPrixEmporter").value);
+  if (!nom || isNaN(surPlace) || isNaN(emporter)) return alert("Champs invalides.");
+  prixPlats[nom] = { surPlace, emporter };
+  localStorage.setItem("prixPlats", JSON.stringify(prixPlats));
+  annulerEditionPlat();
+  rafraichirListePlatsAdmin();
+}
 
-console.log("App KIMLONG prête.");
+function chargerPlatPourEdition(nom) {
+  document.getElementById("adminNomPlat").value = nom;
+  document.getElementById("adminPrixSurPlace").value = prixPlats[nom].surPlace;
+  document.getElementById("adminPrixEmporter").value = prixPlats[nom].emporter;
+}
+
+function supprimerPlat(nom) {
+  if (confirm(`Supprimer le plat "${nom}" ?`)) {
+    delete prixPlats[nom];
+    localStorage.setItem("prixPlats", JSON.stringify(prixPlats));
+    rafraichirListePlatsAdmin();
+  }
+}
+
+function annulerEditionPlat() {
+  document.getElementById("adminNomPlat").value = "";
+  document.getElementById("adminPrixSurPlace").value = "";
+  document.getElementById("adminPrixEmporter").value = "";
+}
 
 </script>
 
@@ -159,15 +203,58 @@ console.log("App KIMLONG prête.");
 </div>
 
 <script>
+console.log("App KIMLONG prête.");
 
-function afficherOnglet(nom) {
-  document.getElementById("onglet-commandes").classList.add("hidden");
-  document.getElementById("onglet-admin").classList.add("hidden");
-  document.getElementById(`onglet-${nom}`).classList.remove("hidden");
+
+function rafraichirListePlatsAdmin() {
+  const tbody = document.querySelector("#tablePlatsAdmin tbody");
+  tbody.innerHTML = "";
+  for (const nom in prixPlats) {
+    const surPlace = prixPlats[nom].surPlace;
+    const emporter = prixPlats[nom].emporter;
+    tbody.innerHTML += `
+      <tr>
+        <td>${nom}</td>
+        <td>${surPlace}</td>
+        <td>${emporter}</td>
+        <td>
+          <button onclick="chargerPlatPourEdition('${nom}')" class="btn-blue">Modifier</button>
+          <button onclick="supprimerPlat('${nom}')" class="btn-red">Supprimer</button>
+        </td>
+      </tr>`;
+  }
 }
 
+function ajouterOuModifierPlat() {
+  const nom = document.getElementById("adminNomPlat").value.trim().toLowerCase();
+  const surPlace = parseFloat(document.getElementById("adminPrixSurPlace").value);
+  const emporter = parseFloat(document.getElementById("adminPrixEmporter").value);
+  if (!nom || isNaN(surPlace) || isNaN(emporter)) return alert("Champs invalides.");
+  prixPlats[nom] = { surPlace, emporter };
+  localStorage.setItem("prixPlats", JSON.stringify(prixPlats));
+  annulerEditionPlat();
+  rafraichirListePlatsAdmin();
+}
 
-console.log("App KIMLONG prête.");
+function chargerPlatPourEdition(nom) {
+  document.getElementById("adminNomPlat").value = nom;
+  document.getElementById("adminPrixSurPlace").value = prixPlats[nom].surPlace;
+  document.getElementById("adminPrixEmporter").value = prixPlats[nom].emporter;
+}
+
+function supprimerPlat(nom) {
+  if (confirm(`Supprimer le plat "${nom}" ?`)) {
+    delete prixPlats[nom];
+    localStorage.setItem("prixPlats", JSON.stringify(prixPlats));
+    rafraichirListePlatsAdmin();
+  }
+}
+
+function annulerEditionPlat() {
+  document.getElementById("adminNomPlat").value = "";
+  document.getElementById("adminPrixSurPlace").value = "";
+  document.getElementById("adminPrixEmporter").value = "";
+}
 
 </script>
 </body>
